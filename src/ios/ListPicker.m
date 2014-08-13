@@ -12,6 +12,7 @@ BOOL isOSAtLeast(NSString* version) {
 @synthesize pickerView = _pickerView;
 @synthesize actionSheet = _actionSheet;
 @synthesize popoverController = _popoverController;
+@synthesize view = _view;
 @synthesize items = _items;
 
 
@@ -78,14 +79,30 @@ BOOL isOSAtLeast(NSString* version) {
    
     // Initialize the View that should conain the toolbar and picker
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.viewSize.width, 260)];
+    [view setBackgroundColor:[UIColor whiteColor]];
     [view addSubview: toolbar];
     [view addSubview:self.pickerView];
   
-    // Check if device is iPad as we won't be able to use an ActionSheet there
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        // Check if device is iPad as we won't be able to use an ActionSheet there
         return [self presentPopoverForView:view];
     } else {
-        return [self presentActionSheetForView:view];
+        if (isOSAtLeast(@"8.0"))  {
+            // todo -- handle 8.0+ on iPad??
+            self.view = [[UIView alloc] initWithFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height, self.viewSize.width, 260)];
+            [self.view setBackgroundColor:[UIColor whiteColor]];
+            [self.view addSubview: toolbar];
+            [self.view addSubview:self.pickerView];
+            
+            [self.viewController.view addSubview:self.view];
+            [UIView beginAnimations:@"SlideUpListPicker" context:nil];
+            [UIView setAnimationDuration:0.5];
+            self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height-260);
+            [UIView commitAnimations];
+        } else {
+            return [self presentActionSheetForView:view];
+        }
     }
 }
      
@@ -166,19 +183,47 @@ BOOL isOSAtLeast(NSString* version) {
     // Emulate a new delegate method
     [self popoverController:self.popoverController dismissWithClickedButtonIndex:1 animated:YES];
   } else {
-    [self.actionSheet dismissWithClickedButtonIndex:1 animated:YES];
+      if (isOSAtLeast(@"8.0"))  {
+          [self  sendResultsFromPickerView:self.pickerView withButtonIndex:1];
+          [UIView animateWithDuration:0.5
+                                delay:0.0
+                              options: 0
+                           animations:^{
+                               self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height);
+                               
+                           }
+                           completion:^(BOOL finished){
+                               [self.view removeFromSuperview];
+                           }];
+      
+      } else {
+          [self.actionSheet dismissWithClickedButtonIndex:1 animated:YES];
+      }
   }
 }
 
 // Picker with toolbar dismissed with cancel
 - (IBAction)didDismissWithCancelButton:(id)sender {
-
   // Check if device is iPad
   if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     // Emulate a new delegate method
     [self popoverController:self.popoverController dismissWithClickedButtonIndex:0 animated:YES];
   } else {
-    [self.actionSheet dismissWithClickedButtonIndex:0 animated:YES];
+      if (isOSAtLeast(@"8.0"))  {
+          [self  sendResultsFromPickerView:self.pickerView withButtonIndex:0];
+          [UIView animateWithDuration:0.5
+                                delay:0.0
+                              options: 0
+                           animations:^{
+                               self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height);
+                               
+                           }
+                           completion:^(BOOL finished){
+                               [self.view removeFromSuperview];
+                           }];
+      } else {
+          [self.actionSheet dismissWithClickedButtonIndex:0 animated:YES];
+      }
   }
 }
 

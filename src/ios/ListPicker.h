@@ -12,6 +12,7 @@
 @property (nonatomic, strong) UIPopoverController *popoverController;
 @property (nonatomic, strong) UIView *view;
 @property (nonatomic, strong) NSArray *items;
+@property (nonatomic) BOOL isVisible;
 
 #pragma mark - Instance methods
 

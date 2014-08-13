@@ -14,6 +14,7 @@ BOOL isOSAtLeast(NSString* version) {
 @synthesize popoverController = _popoverController;
 @synthesize view = _view;
 @synthesize items = _items;
+@synthesize isVisible = _isVisible;
 
 
 - (int)getRowWithValue:(NSString * )name {
@@ -30,7 +31,7 @@ BOOL isOSAtLeast(NSString* version) {
 
     self.callbackId = command.callbackId;
     NSDictionary *options = [command.arguments objectAtIndex:0];
-  
+
     // Compiling options with defaults
     NSString *title = [options objectForKey:@"title"] ?: @" ";
     NSString *doneButtonLabel = [options objectForKey:@"doneButtonLabel"] ?: @"Done";
@@ -90,16 +91,20 @@ BOOL isOSAtLeast(NSString* version) {
     } else {
         if (isOSAtLeast(@"8.0"))  {
             // todo -- handle 8.0+ on iPad??
-            self.view = [[UIView alloc] initWithFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height, self.viewSize.width, 260)];
-            [self.view setBackgroundColor:[UIColor whiteColor]];
-            [self.view addSubview: toolbar];
-            [self.view addSubview:self.pickerView];
+            if (_isVisible==false){
+                _isVisible=true;
+                
+                self.view = [[UIView alloc] initWithFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height, self.viewSize.width, 260)];
+                [self.view setBackgroundColor:[UIColor whiteColor]];
+                [self.view addSubview: toolbar];
+                [self.view addSubview:self.pickerView];
             
-            [self.viewController.view addSubview:self.view];
-            [UIView beginAnimations:@"SlideUpListPicker" context:nil];
-            [UIView setAnimationDuration:0.5];
-            self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height-260);
-            [UIView commitAnimations];
+                [self.viewController.view addSubview:self.view];
+                [UIView beginAnimations:@"SlideUpListPicker" context:nil];
+                [UIView setAnimationDuration:0.5];
+                self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height-260);
+                [UIView commitAnimations];
+            }
         } else {
             return [self presentActionSheetForView:view];
         }
@@ -194,6 +199,7 @@ BOOL isOSAtLeast(NSString* version) {
                            }
                            completion:^(BOOL finished){
                                [self.view removeFromSuperview];
+                               _isVisible=false;
                            }];
       
       } else {
@@ -220,6 +226,7 @@ BOOL isOSAtLeast(NSString* version) {
                            }
                            completion:^(BOOL finished){
                                [self.view removeFromSuperview];
+                               _isVisible=false;
                            }];
       } else {
           [self.actionSheet dismissWithClickedButtonIndex:0 animated:YES];

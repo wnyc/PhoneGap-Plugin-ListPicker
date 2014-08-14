@@ -90,7 +90,8 @@ BOOL isOSAtLeast(NSString* version) {
         // Check if device is iPad as we won't be able to use an ActionSheet there
         return [self presentPopoverForView:view];
     } else {
-        if (isOSAtLeast(@"8.0"))  {
+        //if (isOSAtLeast(@"8.0"))  {
+        if (isOSAtLeast(@"6.0"))  {
             // todo -- handle 8.0+ on iPad??
             if (_isVisible==false){
                 _isVisible=true;
@@ -105,7 +106,7 @@ BOOL isOSAtLeast(NSString* version) {
                     _touchInterceptorView = [[UIView alloc] initWithFrame:self.viewController.view.frame];
                 }
                 // Fill the parent view
-                [_touchInterceptorView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.5]];
+                [_touchInterceptorView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.0]];
                 [self.viewController.view addSubview:_touchInterceptorView];
                 [self.viewController.view bringSubviewToFront:_touchInterceptorView];
                 
@@ -114,6 +115,7 @@ BOOL isOSAtLeast(NSString* version) {
                 [UIView beginAnimations:@"SlideUpListPicker" context:nil];
                 [UIView setAnimationDuration:0.5];
                 self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height-260);
+                _touchInterceptorView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.5];
                 [UIView commitAnimations];
             }
         } else {
@@ -199,13 +201,15 @@ BOOL isOSAtLeast(NSString* version) {
     // Emulate a new delegate method
     [self popoverController:self.popoverController dismissWithClickedButtonIndex:1 animated:YES];
   } else {
-      if (isOSAtLeast(@"8.0"))  {
+      //if (isOSAtLeast(@"8.0"))  {
+      if (isOSAtLeast(@"6.0"))  {
           [self  sendResultsFromPickerView:self.pickerView withButtonIndex:1];
           [UIView animateWithDuration:0.5
                                 delay:0.0
                               options: 0
                            animations:^{
                                self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height);
+                               _touchInterceptorView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
                                
                            }
                            completion:^(BOOL finished){
@@ -227,13 +231,15 @@ BOOL isOSAtLeast(NSString* version) {
     // Emulate a new delegate method
     [self popoverController:self.popoverController dismissWithClickedButtonIndex:0 animated:YES];
   } else {
-      if (isOSAtLeast(@"8.0"))  {
+      //if (isOSAtLeast(@"8.0"))  {
+      if (isOSAtLeast(@"6.0"))  {
           [self  sendResultsFromPickerView:self.pickerView withButtonIndex:0];
           [UIView animateWithDuration:0.5
                                 delay:0.0
                               options: 0
                            animations:^{
                                self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height);
+                               _touchInterceptorView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
                                
                            }
                            completion:^(BOOL finished){

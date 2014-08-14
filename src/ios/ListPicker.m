@@ -15,6 +15,7 @@ BOOL isOSAtLeast(NSString* version) {
 @synthesize view = _view;
 @synthesize items = _items;
 @synthesize isVisible = _isVisible;
+@synthesize touchInterceptorView = _touchInterceptorView;
 
 
 - (int)getRowWithValue:(NSString * )name {
@@ -99,7 +100,17 @@ BOOL isOSAtLeast(NSString* version) {
                 [self.view addSubview: toolbar];
                 [self.view addSubview:self.pickerView];
             
+                // No need to create it again if it already exists
+                if (_touchInterceptorView==nil){
+                    _touchInterceptorView = [[UIView alloc] initWithFrame:self.viewController.view.frame];
+                }
+                // Fill the parent view
+                [_touchInterceptorView setBackgroundColor:[UIColor colorWithWhite:0.0 alpha:0.5]];
+                [self.viewController.view addSubview:_touchInterceptorView];
+                [self.viewController.view bringSubviewToFront:_touchInterceptorView];
+                
                 [self.viewController.view addSubview:self.view];
+                [self.viewController.view bringSubviewToFront:self.view];
                 [UIView beginAnimations:@"SlideUpListPicker" context:nil];
                 [UIView setAnimationDuration:0.5];
                 self.view.frame = CGRectOffset(self.viewController.view.frame, 0, [[UIScreen mainScreen] bounds].size.height-260);
@@ -199,6 +210,7 @@ BOOL isOSAtLeast(NSString* version) {
                            }
                            completion:^(BOOL finished){
                                [self.view removeFromSuperview];
+                               [self.touchInterceptorView removeFromSuperview];
                                _isVisible=false;
                            }];
       
@@ -226,6 +238,7 @@ BOOL isOSAtLeast(NSString* version) {
                            }
                            completion:^(BOOL finished){
                                [self.view removeFromSuperview];
+                               [self.touchInterceptorView removeFromSuperview];
                                _isVisible=false;
                            }];
       } else {

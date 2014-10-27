@@ -286,17 +286,16 @@ BOOL isOSAtLeast(NSString* version) {
   // Build returned result
   NSInteger selectedRow = [pickerView selectedRowInComponent:0];
   NSString *selectedValue = [[self.items objectAtIndex:selectedRow] objectForKey:@"value"];
-  
-  // Create Plugin Result
-  CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:selectedValue];
 
   // Checking if cancel was clicked
   if (buttonIndex == 0) {
     // Call the Failure Javascript function
-    [self writeJavascript: [pluginResult toErrorCallbackString:self.callbackId]];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
   }else {
     // Call the Success Javascript function
-    [self writeJavascript: [pluginResult toSuccessCallbackString:self.callbackId]];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:selectedValue];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];;
   }
 
 }

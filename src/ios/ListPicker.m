@@ -1,5 +1,4 @@
 #import "ListPicker.h"
-#import <Cordova/CDVDebug.h>
 
 BOOL isOSAtLeast(NSString* version) {
     return [[[UIDevice currentDevice] systemVersion] compare:version options:NSNumericSearch] != NSOrderedAscending;

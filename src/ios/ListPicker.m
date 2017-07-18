@@ -334,8 +334,8 @@ BOOL isOSAtLeast(NSString* version) {
 
 - (CGSize) viewSize {
     if (![self isViewPortrait])
-        return CGSizeMake(480, 320);
-    return CGSizeMake(320, 480);
+        return CGSizeMake(480, CGRectGetWidth(UIScreen.mainScreen.bounds));
+    return CGSizeMake(CGRectGetWidth(UIScreen.mainScreen.bounds), 480);
 }
 
 - (BOOL) isViewPortrait {

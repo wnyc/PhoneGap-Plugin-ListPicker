@@ -91,7 +91,12 @@ public class ListPicker extends CordovaPlugin {
                         }
                     }
                 });
-                
+                builder.setOnCancelListener(new  DialogInterface.OnCancelListener() {
+                    public void onCancel(DialogInterface dialog) {
+                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR));
+                    }
+                });
+
                 // Show alert dialog
                 AlertDialog alert = builder.create();
                 alert.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
